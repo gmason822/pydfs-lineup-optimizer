@@ -23,7 +23,10 @@ class TotalExposureStrategy(BaseExposureStrategy):
         if not max_exposure:
             return False
         used = self.used_vars.get(var, 0)
-        return max_exposure <= used / self.total_lineups
+        current_exposure = used / self.total_lineups
+        # FIXED: Changed from <= to >= (max_exposure should be limit, not minimum)
+        is_reached = current_exposure >= max_exposure
+        return is_reached
 
 
 class AfterEachExposureStrategy(BaseExposureStrategy):
@@ -40,4 +43,5 @@ class AfterEachExposureStrategy(BaseExposureStrategy):
         if not max_exposure or not self.current_iteration:
             return False
         used = self.used_vars.get(var, 0)
-        return max_exposure <= used / self.current_iteration
+        # FIXED: Changed from <= to >= (max_exposure should be limit, not minimum)
+        return used / self.current_iteration >= max_exposure
